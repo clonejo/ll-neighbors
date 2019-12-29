@@ -1,0 +1,18 @@
+[package]
+name = "ll-neighbors"
+version = "0.1.0"
+authors = ["clonejo <clonejo@shakik.de>"]
+edition = "2018"
+description = """
+Perform lookups in the OS' neighbor table cache. Ie. get the link-local (MAC) address for an IP address in your local network.
+Only Linux supported for now. Calls 'ip' internally.
+"""
+license = "Apache-2.0"
+repository = "https://github.com/clonejo/ll-neighbors"
+keywords = ["ethernet", "mac", "networking"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+serde = { version = "1.0.104", features = ["derive"]}
+serde_json = "1.0.44"
