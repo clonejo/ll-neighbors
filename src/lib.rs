@@ -16,11 +16,11 @@ struct Neighbor {
     dst: IpAddr,
     dev: String,
     lladdr: LlAddr,
-    state: Vec<Reachable>,
+    state: Vec<State>,
 }
 #[derive(Deserialize, Debug)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
-enum Reachable {
+enum State {
     Delay,
     Reachable,
     Stale,
