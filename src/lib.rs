@@ -67,7 +67,7 @@ pub fn neighbors() -> Result<HashMap<IpAddr, LlAddr>, LookupError> {
 #[cfg(target_os = "linux")]
 pub fn lookup(ip_addr: IpAddr) -> Result<Option<LlAddr>, LookupError> {
     let ip_addr = normalize_ip_addr(ip_addr);
-    let neighbors: Vec<Neighbor> = dbg!(neighbors_raw()?);
+    let neighbors: Vec<Neighbor> = neighbors_raw()?;
     let lladdr = neighbors
         .into_iter()
         .filter(|n| n.dst == ip_addr)
