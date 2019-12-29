@@ -66,13 +66,24 @@ pub fn neighbors() -> Result<HashMap<IpAddr, LlAddr>, LookupError> {
 }
 #[cfg(target_os = "linux")]
 pub fn lookup(ip_addr: IpAddr) -> Result<Option<LlAddr>, LookupError> {
-    let neighbors: Vec<Neighbor> = neighbors_raw()?;
+    let ip_addr = normalize_ip_addr(ip_addr);
+    let neighbors: Vec<Neighbor> = dbg!(neighbors_raw()?);
     let lladdr = neighbors
         .into_iter()
         .filter(|n| n.dst == ip_addr)
         .nth(0)
         .map(|n| n.lladdr);
     Ok(lladdr)
+}
+
+fn normalize_ip_addr(ip_addr: IpAddr) -> IpAddr {
+    match ip_addr {
+        IpAddr::V4(_) => ip_addr,
+        IpAddr::V6(v6) => match v6.to_ipv4() {
+            Some(converted_v4) => IpAddr::V4(converted_v4),
+            None => ip_addr,
+        },
+    }
 }
 
 #[cfg(test)]
