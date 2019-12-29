@@ -15,13 +15,14 @@ pub struct LlAddr(String);
 struct Neighbor {
     dst: IpAddr,
     dev: String,
-    lladdr: LlAddr,
+    lladdr: Option<LlAddr>,
     state: Vec<State>,
 }
 #[derive(Deserialize, Debug)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 enum State {
     Delay,
+    Failed,
     Reachable,
     Stale,
 }
@@ -61,7 +62,15 @@ fn neighbors_raw() -> Result<Vec<Neighbor>, LookupError> {
 #[cfg(target_os = "linux")]
 pub fn neighbors() -> Result<HashMap<IpAddr, LlAddr>, LookupError> {
     let neighbors: Vec<Neighbor> = neighbors_raw()?;
-    let neighbors_map = neighbors.into_iter().map(|n| (n.dst, n.lladdr)).collect();
+    let neighbors_map = neighbors
+        .into_iter()
+        .filter_map(|n| match n {
+            Neighbor {
+                lladdr: Some(l), ..
+            } => Some((n.dst, l)),
+            Neighbor { lladdr: None, .. } => None,
+        })
+        .collect();
     Ok(neighbors_map)
 }
 #[cfg(target_os = "linux")]
@@ -71,8 +80,8 @@ pub fn lookup(ip_addr: IpAddr) -> Result<Option<LlAddr>, LookupError> {
     let lladdr = neighbors
         .into_iter()
         .filter(|n| n.dst == ip_addr)
-        .nth(0)
-        .map(|n| n.lladdr);
+        .filter_map(|n| n.lladdr)
+        .nth(0);
     Ok(lladdr)
 }
 
