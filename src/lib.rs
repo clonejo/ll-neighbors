@@ -8,8 +8,13 @@ use std::net::IpAddr;
 use std::process::Command;
 use std::str::Utf8Error;
 
-#[derive(Deserialize, Debug, PartialEq)]
+#[derive(Clone, Deserialize, Debug, Eq, Hash, PartialEq)]
 pub struct LlAddr(String);
+impl LlAddr {
+    pub fn as_str(&self) -> &str {
+        self.0.as_str()
+    }
+}
 
 #[derive(Deserialize, Debug)]
 struct Neighbor {
