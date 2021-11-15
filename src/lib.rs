@@ -11,6 +11,10 @@ use std::str::Utf8Error;
 #[derive(Clone, Deserialize, Debug, Eq, Hash, PartialEq)]
 pub struct LlAddr(String);
 impl LlAddr {
+    pub fn from_string(mut s: String) -> Self {
+        s = s.to_lowercase();
+        LlAddr(s)
+    }
     pub fn as_str(&self) -> &str {
         self.0.as_str()
     }
