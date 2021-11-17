@@ -32,6 +32,7 @@ struct Neighbor {
 enum State {
     Delay,
     Failed,
+    Incomplete,
     Reachable,
     Stale,
 }
